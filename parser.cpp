@@ -1,3 +1,6 @@
+//Parser for Productions:
+//s->AA
+//A->aA/b
 #include<bits/stdc++.h>
 
 using namespace std;
@@ -138,6 +141,16 @@ int main(){
             }
             push(pushSymbol);
             push(parseTable[parseStack[top-1]-'0'][l]);
+
+            //Print Reduced String
+            cout<<"Reduced String:";
+            for(int m=1;m<top;m+=2){
+                cout<<parseStack[m];
+            }
+            for(int m=i;m<n-1;m++){
+                cout<<str[m];
+            }
+            cout<<"\n";
         }
         else if(parseTable[parseStack[top]-'0'][j]=='!'){
             cout<<"Accepted\n";
