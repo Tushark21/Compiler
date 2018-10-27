@@ -1,9 +1,15 @@
-//Parser for Productions:
-//s->AA
-//A->aA/b
+//Parser for Present Indefinite Tense:
+
 #include<bits/stdc++.h>
 
 using namespace std;
+
+vector<string> s={"s","I","He","She","they"};
+vector<string> T={"t","the"};
+vector<string> places={"p","rain","Himalayas"};
+vector<string> verbs={"v","pours","plays","work","run","goes","study"};
+vector<string> connectors={"c","into","with"};
+vector<string> objects={"o","ball","pot"};
 
 void pop();
 void push(string token);
@@ -22,60 +28,91 @@ int toInt(string str){
 }
 
 char findTerminal(string str){
+    int n=s.size();
+    for(int i=0;i<n;i++){
+        if(str==s[i]){
+            return 's';
+        }
+    }
+    n=T.size();
+    for(int i=0;i<n;i++){
+        if(str==T[i]){
+            return 't';
+        }
+    }
+    n=places.size();
+    for(int i=0;i<n;i++){
+        if(str==places[i]){
+            return 'p';
+        }
+    }
+    n=verbs.size();
+    for(int i=0;i<n;i++){
+        if(str==verbs[i]){
+            return 'v';
+        }
+    }
+    n=connectors.size();
+    for(int i=0;i<n;i++){
+        if(str==connectors[i]){
+            return 'c';
+        }
+    }
+    n=objects.size();
+    for(int i=0;i<n;i++){
+        if(str==objects[i]){
+            return 'o';
+        }
+    }
 
+    return '*';
 }
 
 int main(){
     
-    vector<vector<string>> parseTable(17,vector<string> (13,"-"));
+    vector<vector<string>> parseTable(17,vector<string> (14,"-"));
     //vector<vector<char>> dParseTable(17,vector<char> (13,'-'));
-/*
-    parseTable[0][1]='a';
-    parseTable[0][2]='b';
-    parseTable[0][3]='$';
-    parseTable[0][4]='A';
-    parseTable[0][5]='S';
-
-    parseTable[1][0]='0';
-    parseTable[2][0]='1';
-    parseTable[3][0]='2';
-    parseTable[4][0]='3';
-    parseTable[5][0]='4';
-    parseTable[6][0]='5';
-    parseTable[7][0]='6';
-    9 States
-    10 columns:
-    s,v,c,o,$
-    Subject,Connecting Verbs,Verbs,Objects
-*/
 
     parseTable[0][0]="s5";
     parseTable[0][1]="s4";
-    parseTable[2][3]="s16";
-    parseTable[3][2]="s8";
-    parseTable[6][4]="s9";
-    parseTable[10][0]="s14";
-    parseTable[10][5]="s13";
-    parseTable[12][5]="s15";
+    parseTable[2][3]="s7";
+    parseTable[3][2]="s9";
+    parseTable[6][4]="s10";
+
+    parseTable[11][0]="s5";
+    parseTable[11][5]="s14";
+    parseTable[13][5]="s15";
 
     parseTable[4][3]="r3";
     parseTable[5][2]="r4";
-    parseTable[7][3]="r2";
-    parseTable[8][3]="r5";
-    parseTable[9][0]="r7";
-    parseTable[9][5]="r7";
-    parseTable[9][6]="r4";
-    parseTable[11][5]="r1";
-    parseTable[13][6]="r9";
-    parseTable[14][5]="r4";
+    parseTable[5][5]="r4";
+    parseTable[7][4]="r6";
+    parseTable[8][3]="r2";
+    parseTable[9][3]="r5";
+    parseTable[10][0]="r7";
+    parseTable[10][5]="r7";
+    //
+    //parseTable[10][6]="r7";
+    //
+    parseTable[12][6]="r1";
+    parseTable[14][6]="r9";
     parseTable[15][6]="r8";
-    parseTable[16][4]="r6";
+///////
+    parseTable[15][5]="r4";
+    parseTable[13][6]="r9";
+
+    //May Needed to change
+    //parseTable[11][6]="r1";
+
 
     parseTable[0][7]="3";
     parseTable[0][8]="1";
     parseTable[0][9]="2";
     parseTable[2][10]="6";
-    parseTable[6][11]="10";
+    parseTable[3][13]="8";
+    parseTable[6][11]="11";
+    parseTable[11][7]="13";
+    parseTable[11][12]="12";
     
     parseTable[1][6]="!";       //Accept State  :   !
 
@@ -89,11 +126,18 @@ int main(){
     */
 
     string str,temp="",newString="";
-    cin>>str;
-/*
+    getline(cin,str);
+
     for(int i=0;i<str.length();i++){
         if(str[i]==' '){
-            temp+=findTerminal(newString);
+            char ch=findTerminal(newString);
+            if(ch=='*'){
+                cout<<"Error\n";
+                break;
+            }
+            temp+=ch;
+            //cout<<newString<<",";
+            newString="";
         }
         else{
             newString+=str[i];
@@ -101,7 +145,9 @@ int main(){
     }
     temp+=findTerminal(newString);
 
-    str=temp;*/
+    str=temp;
+    //cout<<str<<"\n";
+    cout<<"S:Sentence\nQ:Subject\nV:Verb\nC:Connectors\nO:Objects\n\n";
     str+='$';
 
     push("0");
@@ -157,7 +203,7 @@ int main(){
             else if(pushSymbol=="5"){
                 len=2;
                 pushSymbol="P";
-                l=4;///////////
+                l=13;
             }
             else if(pushSymbol=="6"){
                 len=2;
@@ -188,12 +234,12 @@ int main(){
             push(parseTable[row][l]);
 
             //Print Reduced String
-            cout<<"Reduced String:";
+            cout<<"Reduced String: ";
             for(int m=1;m<top;m+=2){
-                cout<<parseStack[m];
+                cout<<parseStack[m]<<" ";
             }
             for(int m=i;m<n-1;m++){
-                cout<<str[m];
+                cout<<str[m]<<" ";
             }
             cout<<"\n";
         }
@@ -280,7 +326,11 @@ int findIndex(char ch){
         return 12;
         break;
 
+        case 'P':
+        return 13;
+        break;
+
         default:
-        return 12;
+        return 13;
     }
 }
